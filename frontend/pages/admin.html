@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ShopEase</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Admin Dashboard Specific Styles */
+        .admin-page {
+            padding: 3rem 0;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f4ff 100%);
+            min-height: calc(100vh - 200px);
+        }
+        
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .admin-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .admin-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .admin-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .admin-sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .admin-profile {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .admin-avatar i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .admin-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-role {
+            color: #667eea;
+            font-weight: 500;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .admin-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            color: #667eea;
+        }
+
+        .menu-item.active {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .menu-item i {
+            width: 24px;
+            margin-right: 0.75rem;
+        }
+
+        .admin-content {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f4ff 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #eee;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon i {
+            font-size: 1.8rem;
+            color: #667eea;
+        }
+
+        .stat-icon.revenue i { color: #28a745; }
+        .stat-icon.orders i { color: #ffc107; }
+        .stat-icon.users i { color: #17a2b8; }
+
+        .stat-info { flex: 1; }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-shipped {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.view {
+            background: #e7f1ff;
+            color: #0066cc;
+        }
+
+        .action-btn.edit {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .action-btn.delete {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .action-icon i {
+            font-size: 1.8rem;
+            color: #667eea;
+        }
+
+        .action-text {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-logout {
+            background: #f8d7da;
+            color: #721c24;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        @media (max-width: 992px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/index.html">
+                    <i class="fas fa-store"></i>
+                    <span class="logo-text">Shop<span class="logo-highlight">Ease</span></span>
+                </a>
+            </div>
+
+            <div class="nav-links">
+                <a href="/index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="/products" class="nav-link">
+                    <i class="fas fa-box"></i>
+                    <span>Products</span>
+                </a>
+                <a href="/cart" class="nav-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Cart <span class="cart-count">0</span></span>
+                </a>
+                <a href="/admin" class="nav-link active">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Dashboard Content -->
+    <main class="admin-page">
+        <div class="container">
+            <div class="admin-header">
+                <h1 class="admin-title">Admin Dashboard</h1>
+                <p class="admin-subtitle">Manage your store efficiently and effectively</p>
+            </div>
+
+            <div class="admin-container">
+                <!-- Admin Sidebar -->
+                <aside class="admin-sidebar">
+                    <div class="admin-profile">
+                        <div class="admin-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="admin-name" id="adminName">Administrator</div>
+                        <div class="admin-role">Super Admin</div>
+                    </div>
+
+                    <nav class="admin-menu">
+                        <a href="#" class="menu-item active" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                        <a href="#" class="menu-item" data-section="products">
+                            <i class="fas fa-box"></i>
+                            Products
+                        </a>
+                        <a href="#" class="menu-item" data-section="orders">
+                            <i class="fas fa-shopping-cart"></i>
+                            Orders
+                        </a>
+                        <a href="#" class="menu-item" data-section="users">
+                            <i class="fas fa-users"></i>
+                            Users
+                        </a>
+                        <a href="#" class="menu-item" data-section="analytics">
+                            <i class="fas fa-chart-line"></i>
+                            Analytics
+                        </a>
+                        <a href="#" class="menu-item" data-section="settings">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </nav>
+
+                    <button class="btn btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </aside>
+
+                <!-- Admin Content -->
+                <div class="admin-content">
+                    <!-- Dashboard Section -->
+                    <section id="dashboard" class="admin-section active">
+                        <div class="content-header">
+                            <h2 class="content-title">Dashboard Overview</h2>
+                            <button class="btn btn-primary" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="totalProducts">8</div>
+                                    <div class="stat-label">Total Products</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon revenue">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="totalRevenue">$0.00</div>
+                                    <div class="stat-label">Total Revenue</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon orders">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="totalOrders">0</div>
+                                    <div class="stat-label">Total Orders</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon users">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="totalUsers">2</div>
+                                    <div class="stat-label">Registered Users</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <h3 style="margin-bottom: 1rem; color: #333;">Quick Actions</h3>
+                        <div class="quick-actions">
+                            <div class="action-card" onclick="showSection('products')">
+                                <div class="action-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="action-text">Add Product</div>
+                            </div>
+                            <div class="action-card" onclick="showSection('orders')">
+                                <div class="action-icon">
+                                    <i class="fas fa-list"></i>
+                                </div>
+                                <div class="action-text">View Orders</div>
+                            </div>
+                            <div class="action-card" onclick="showSection('users')">
+                                <div class="action-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="action-text">Manage Users</div>
+                            </div>
+                            <div class="action-card" onclick="showSection('analytics')">
+                                <div class="action-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div class="action-text">View Analytics</div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Orders -->
+                        <h3 style="margin-bottom: 1rem; color: #333;">Recent Orders</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentOrders">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                                        No orders yet. Orders will appear here when customers make purchases.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Products Section -->
+                    <section id="products" class="admin-section">
+                        <div class="content-header">
+                            <h2 class="content-title">Products Management</h2>
+                            <button class="btn btn-primary" onclick="addNewProduct()">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                        </div>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTable">
+                                <tr>
+                                    <td>P001</td>
+                                    <td>Wireless Bluetooth Headphones</td>
+                                    <td>Electronics</td>
+                                    <td>$89.99</td>
+                                    <td>50</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn edit">Edit</button>
+                                            <button class="action-btn delete">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>P002</td>
+                                    <td>Smart Watch Series 5</td>
+                                    <td>Electronics</td>
+                                    <td>$249.99</td>
+                                    <td>30</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn edit">Edit</button>
+                                            <button class="action-btn delete">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>P003</td>
+                                    <td>Cotton T-Shirt Pack</td>
+                                    <td>Fashion</td>
+                                    <td>$34.99</td>
+                                    <td>100</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn edit">Edit</button>
+                                            <button class="action-btn delete">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Orders Section -->
+                    <section id="orders" class="admin-section">
+                        <div class="content-header">
+                            <h2 class="content-title">Orders Management</h2>
+                            <button class="btn btn-primary" onclick="exportOrders()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTable">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                                        No orders found
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Users Section -->
+                    <section id="users" class="admin-section">
+                        <div class="content-header">
+                            <h2 class="content-title">Users Management</h2>
+                            <button class="btn btn-primary" onclick="addNewUser()">
+                                <i class="fas fa-user-plus"></i> Add User
+                            </button>
+                        </div>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <tr>
+                                    <td>1</td>
+                                    <td>Demo User</td>
+                                    <td>user@demo.com</td>
+                                    <td><span class="status-badge status-shipped">Customer</span></td>
+                                    <td>Jan 15, 2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn view">View</button>
+                                            <button class="action-btn edit">Edit</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Administrator</td>
+                                    <td>admin@shop.com</td>
+                                    <td><span class="status-badge status-delivered">Admin</span></td>
+                                    <td>Jan 1, 2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn view">View</button>
+                                            <button class="action-btn edit">Edit</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Analytics Section -->
+                    <section id="analytics" class="admin-section">
+                        <div class="content-header">
+                            <h2 class="content-title">Analytics</h2>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value">1,234</div>
+                                    <div class="stat-label">Page Views (Today)</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon revenue">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value">+15%</div>
+                                    <div class="stat-label">Growth This Month</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon orders">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value">4.8</div>
+                                    <div class="stat-label">Avg. Rating</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon users">
+                                    <i class="fas fa-redo"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value">68%</div>
+                                    <div class="stat-label">Return Customers</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: #f8f9fa; padding: 2rem; border-radius: 15px; text-align: center; color: #666;">
+                            <i class="fas fa-chart-bar" style="font-size: 3rem; margin-bottom: 1rem; color: #667eea;"></i>
+                            <p>Detailed analytics charts will be displayed here.</p>
+                            <p>Track your sales, traffic, and customer behavior.</p>
+                        </div>
+                    </section>
+
+                    <!-- Settings Section -->
+                    <section id="settings" class="admin-section">
+                        <div class="content-header">
+                            <h2 class="content-title">Settings</h2>
+                        </div>
+
+                        <div style="max-width: 600px;">
+                            <div style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Store Name</label>
+                                <input type="text" value="ShopEase" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <div style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Contact Email</label>
+                                <input type="email" value="support@shopease.com" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <div style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Currency</label>
+                                <select style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                                    <option>USD ($)</option>
+                                    <option>EUR (€)</option>
+                                    <option>GBP (£)</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Settings
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: #333; color: white; padding: 2rem 0; text-align: center;">
+        <div class="container">
+            <p>&copy; 2024 ShopEase Admin Dashboard. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Admin Dashboard JavaScript
+        console.log('🔧 Admin Dashboard loaded');
+
+        // Check admin authentication
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (currentUser && currentUser.name) {
+                document.getElementById('adminName').textContent = currentUser.name;
+            }
+
+            // Load orders from localStorage
+            loadDashboardData();
+
+            // Setup menu navigation
+            setupMenuNavigation();
+
+            // Update cart count
+            updateCartCount();
+        });
+
+        // Setup menu navigation
+        function setupMenuNavigation() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    showSection(section);
+                    
+                    // Update active menu item
+                    menuItems.forEach(mi => mi.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.admin-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Update menu active state
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === sectionId) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            
+            // Update stats
+            document.getElementById('totalOrders').textContent = orders.length;
+            
+            // Calculate total revenue
+            const totalRevenue = orders.reduce((sum, order) => {
+                return sum + (order.totals?.total || 0);
+            }, 0);
+            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+
+            // Load recent orders
+            loadRecentOrders(orders);
+        }
+
+        // Load recent orders
+        function loadRecentOrders(orders) {
+            const tbody = document.getElementById('recentOrders');
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                            No orders yet. Orders will appear here when customers make purchases.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const recentOrders = orders.slice(-5).reverse();
+            let html = '';
+            
+            recentOrders.forEach(order => {
+                const date = new Date(order.date).toLocaleDateString();
+                const customer = order.shipping ? 
+                    `${order.shipping.firstName} ${order.shipping.lastName}` : 'Guest';
+                const status = order.status || 'processing';
+                
+                html += `
+                    <tr>
+                        <td>${order.orderId}</td>
+                        <td>${customer}</td>
+                        <td>${date}</td>
+                        <td>${order.items?.length || 0} items</td>
+                        <td>$${order.totals?.total?.toFixed(2) || '0.00'}</td>
+                        <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewOrder('${order.orderId}')">View</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Refresh data
+        function refreshData() {
+            loadDashboardData();
+            alert('Dashboard data refreshed!');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = '/login';
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartCounts = document.querySelectorAll('.cart-count');
+            cartCounts.forEach(el => {
+                el.textContent = cart.length;
+            });
+        }
+
+        // Placeholder functions
+        function addNewProduct() {
+            alert('Add Product feature coming soon!');
+        }
+
+        function addNewUser() {
+            alert('Add User feature coming soon!');
+        }
+
+        function exportOrders() {
+            alert('Export Orders feature coming soon!');
+        }
+
+        function viewOrder(orderId) {
+            alert('Viewing order: ' + orderId);
+        }
+    </script>
+</body>
+</html>

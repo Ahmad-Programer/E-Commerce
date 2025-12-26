@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Products - ShopEase</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles for products page */
+        .products-page {
+            padding: var(--spacing-lg) 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg) 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: var(--radius-lg);
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-sm);
+            color: white;
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .products-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: var(--spacing-xl);
+        }
+        
+        /* Filters Sidebar */
+        .filters-sidebar {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .filter-section {
+            margin-bottom: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: var(--spacing-lg);
+        }
+        
+        .filter-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .filter-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .filter-title i {
+            color: var(--primary-color);
+        }
+        
+        /* Categories Filter */
+        .category-filter-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .category-filter-item:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+        
+        .category-filter-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .category-filter-item i {
+            width: 24px;
+            margin-right: var(--spacing-sm);
+        }
+        
+        .category-count {
+            margin-left: auto;
+            background: var(--light-color);
+            padding: 0.1rem 0.5rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+        
+        .category-filter-item.active .category-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        /* Price Filter */
+        .price-filter {
+            padding: var(--spacing-sm) 0;
+        }
+        
+        .price-range {
+            width: 100%;
+            margin: var(--spacing-md) 0;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: var(--radius-full);
+            outline: none;
+        }
+        
+        .price-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .price-value {
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+        
+        /* Sorting */
+        .sort-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .sort-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        /* Products Grid */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .products-count {
+            font-size: 1.1rem;
+            color: var(--gray-color);
+        }
+        
+        .products-count span {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .search-box-products {
+            display: flex;
+            width: 300px;
+        }
+        
+        .search-box-products input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+            font-size: 0.95rem;
+        }
+        
+        .search-box-products button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            cursor: pointer;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        /* Product Card Enhancements */
+        .product-category {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-description {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            line-height: 1.5;
+            margin: var(--spacing-sm) 0;
+            height: 42px;
+            overflow: hidden;
+        }
+        
+        .review-count {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+        
+        .product-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .feature-tag {
+            display: inline-block;
+            background: var(--light-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            color: var(--dark-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .stock-badge {
+            position: absolute;
+            top: var(--spacing-sm);
+            left: var(--spacing-sm);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .in-stock {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .out-stock {
+            background-color: var(--gray-color);
+            color: white;
+        }
+        
+        /* No Products State */
+        .no-products {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: var(--spacing-xl);
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .no-products i {
+            font-size: 4rem;
+            color: var(--gray-color);
+            margin-bottom: var(--spacing-md);
+            opacity: 0.5;
+        }
+        
+        .no-products h3 {
+            color: var(--dark-color);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover:not(.disabled) {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .pagination-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .products-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-sidebar {
+                position: static;
+            }
+            
+            .products-header {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                text-align: center;
+            }
+            
+            .search-box-products {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-section {
+                padding: var(--spacing-md) 0;
+            }
+            
+            .filters-sidebar {
+                padding: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar (Same as index.html) -->
+    <nav class="navbar">
+        <div class="container">
+            <!-- Logo -->
+            <div class="logo">
+                <a href="/">
+                    <i class="fas fa-store"></i>
+                    <span class="logo-text">Shop<span class="logo-highlight">Ease</span></span>
+                </a>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-box">
+                <input type="text" placeholder="Search for products, brands and more..." id="searchInput">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="/products" class="nav-link active">
+                    <i class="fas fa-box"></i>
+                    <span>Products</span>
+                </a>
+                <a href="/cart" class="nav-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Cart <span class="cart-count">0</span></span>
+                </a>
+                <a href="/login" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Account</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Products Page Content -->
+    <main class="products-page">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Our Products</h1>
+                <p class="page-subtitle">Discover amazing products at unbeatable prices. Shop from our wide collection of electronics, fashion, sports gear and more.</p>
+            </div>
+
+            <!-- Products Container -->
+            <div class="products-container">
+                <!-- Filters Sidebar -->
+                <aside class="filters-sidebar">
+                    <!-- Categories Filter -->
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <i class="fas fa-filter"></i>
+                            Categories
+                        </h3>
+                        <div class="categories-filter" id="categoriesFilter">
+                            <!-- Categories will be loaded by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <i class="fas fa-tag"></i>
+                            Price Range
+                        </h3>
+                        <div class="price-filter">
+                            <div class="price-value" id="priceValue">$299.99</div>
+                            <input type="range" class="price-range" id="priceRange" 
+                                   min="0" max="300" value="300" step="10">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray-color);">
+                                <span>$0</span>
+                                <span>$300</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sorting -->
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <i class="fas fa-sort"></i>
+                            Sort By
+                        </h3>
+                        <div class="sort-options">
+                            <select class="sort-select" id="sortProducts">
+                                <option value="default">Default (Newest)</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="rating">Highest Rated</option>
+                                <option value="name">Name: A to Z</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Clear Filters -->
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: var(--spacing-lg);" id="clearFilters">
+                        <i class="fas fa-times"></i>
+                        Clear All Filters
+                    </button>
+                </aside>
+
+                <!-- Products Main Content -->
+                <div class="products-main">
+                    <!-- Products Header -->
+                    <div class="products-header">
+                        <div class="products-count">
+                            Showing <span id="productCount">8 products</span>
+                        </div>
+                        
+                        <div class="search-box-products">
+                            <input type="text" placeholder="Search products..." id="productSearch">
+                            <button>
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="products-grid" id="productsGrid">
+                        <!-- Products will be loaded by JavaScript -->
+                        <div class="loading">Loading products...</div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <a href="#" class="pagination-btn disabled">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                        <a href="#" class="pagination-btn active">1</a>
+                        <a href="#" class="pagination-btn">2</a>
+                        <a href="#" class="pagination-btn">3</a>
+                        <a href="#" class="pagination-btn">4</a>
+                        <a href="#" class="pagination-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (Same as index.html) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>ShopEase</h3>
+                    <p>Your trusted online shopping destination since 2024. We bring you the best products at amazing prices.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/products">Products</a></li>
+                        <li><a href="/cart">Cart</a></li>
+                        <li><a href="/login">My Account</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Help & Support</h3>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Info</h3>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Street, City, Country</li>
+                        <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
+                        <li><i class="fas fa-envelope"></i> support@shopease.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ShopEase. All rights reserved. | Designed with <i class="fas fa-heart"></i> for learning</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="/js/products.js"></script>
+    <script src="/script.js"></script>
+    
+    <script>
+        // Additional functionality for products page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Products page loaded');
+            
+            // Check if products.js loaded
+            if (typeof displayProducts === 'function') {
+                console.log('displayProducts function available');
+            } else {
+                console.error('displayProducts function NOT available');
+            }
+            
+            // Clear filters button
+            const clearFiltersBtn = document.getElementById('clearFilters');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Reset all filters
+                    document.getElementById('priceRange').value = 300;
+                    document.getElementById('priceValue').textContent = '$300';
+                    document.getElementById('sortProducts').value = 'default';
+                    document.getElementById('productSearch').value = '';
+                    
+                    // Reset category filter
+                    document.querySelectorAll('.category-filter-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    document.querySelector('.category-filter-item[data-category="all"]').classList.add('active');
+                    
+                    // Show all products
+                    if (typeof filterByCategory === 'function') {
+                        filterByCategory('all');
+                    }
+                    
+                    // Show notification
+                    if (typeof showNotification === 'function') {
+                        showNotification('All filters cleared', 'info');
+                    }
+                });
+            }
+            
+            // Make sure cart count is updated
+            if (typeof updateCartCount === 'function') {
+                updateCartCount();
+            }
+        });
+    </script>
+</body>
+</html>
